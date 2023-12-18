@@ -1,0 +1,58 @@
+name: "Back End CI"
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: |
+          cd ./starter/backend
+          pipenv install
+          pipenv run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: |
+          cd ./starter/backend
+          pipenv install
+          pipenv run test
+
+  build:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and Run Docker Image
+        run: |
+          cd ./starter/backend
+          docker build --tag mp-backend:latest .
+
+      - name: Start Docker Container
+        run: |
+          docker run -p 5000:5000 --name mp-backend -d mp-backend
+
+      - name: Wait for Container to Initialize
+        run: sleep 10
+
+      - name: Get Movies List
+        run: curl http://localhost:5000/movies
+
+      - name: Print Logs
+        run: docker logs -f mp-backend
+
+      - name: Stop Docker
+        run: docker stop
