@@ -65,8 +65,5 @@ jobs:
       - name: Get Movies List
         run: curl http://localhost:5000/movies
 
-      - name: Print Logs
-        run: docker logs -f mp-backend
-
       - name: Stop Docker
         run: docker stop
