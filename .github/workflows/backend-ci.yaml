@@ -64,6 +64,3 @@ jobs:
 
       - name: Get Movies List
         run: curl http://localhost:5000/movies
-
-      - name: Stop Docker
-        run: docker stop
