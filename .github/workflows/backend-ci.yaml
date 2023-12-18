@@ -20,7 +20,7 @@ jobs:
 
       - run: |
           cd ./starter/backend
-          pipenv install
+          pipenv install --dev
           pipenv run lint
 
   test:
@@ -39,7 +39,7 @@ jobs:
 
       - run: |
           cd ./starter/backend
-          pipenv install
+          pipenv install --dev
           pipenv run test
 
   build:
